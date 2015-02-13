@@ -15,7 +15,7 @@ habitrpg.controller("TasksCtrl", ['$scope', '$rootScope', '$location', 'User','N
               break;
           case 'todo':
               $rootScope.playSound('ToDo');
-              Guide.gotoSet(1);
+              Guide.goto('intro', 1);
               break;
           default:
               if (direction === 'down') $rootScope.playSound('Minus_Habit');
@@ -34,7 +34,7 @@ habitrpg.controller("TasksCtrl", ['$scope', '$rootScope', '$location', 'User','N
       }
       User.user.ops.addTask({body:newTask});
       delete listDef.newTask;
-      if (listDef.type=='daily') Guide.gotoSet(2);
+      if (listDef.type=='daily') Guide.goto('intro', 2);
     };
 
     /**
@@ -73,7 +73,7 @@ habitrpg.controller("TasksCtrl", ['$scope', '$rootScope', '$location', 'User','N
       if (!stayOpen) task._editing = false;
       if (isSaveAndClose)
         $("#task-" + task.id).parent().children('.popover').removeClass('in');
-      if (task.type == 'habit') Guide.gotoSet(3);
+      if (task.type == 'habit') Guide.goto('intro', 3);
     };
 
     /**

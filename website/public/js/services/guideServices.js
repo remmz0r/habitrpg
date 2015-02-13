@@ -8,100 +8,103 @@ angular.module('habitrpg').factory('Guide',
 ['$rootScope', 'User', '$timeout', '$state',
 function($rootScope, User, $timeout, $state) {
 
-  var sets = [
-    [ // 0
-      {
-        state: 'tasks',
-        element: ".task-column.todos",
-        content: window.env.t('tourWelcome'),
-        placement: "top"
-      }
+  var chapters = {
+    intro: [
+      [ // 0
+        {
+          state: 'tasks',
+          element: ".task-column.todos",
+          content: window.env.t('tourWelcome'),
+          placement: "top"
+        }
 
-    ], [ // 1
-      {
-        state: 'tasks',
-        element: '.sticky-wrapper',
-        content: window.env.t('tourExp'),
-        placement: 'bottom'
-      }, {
-        state: 'tasks',
-        element: ".task-column.dailys",
-        content: window.env.t('tourDailies'),
-        placement: "top"
-      }
+      ], [ // 1
+        {
+          state: 'tasks',
+          element: '.sticky-wrapper',
+          content: window.env.t('tourExp'),
+          placement: 'bottom'
+        }, {
+          state: 'tasks',
+          element: ".task-column.dailys",
+          content: window.env.t('tourDailies'),
+          placement: "top"
+        }
 
-    ], [ // 2
-      {
-        state: 'tasks',
-        element: '.meter.health',
-        content: window.env.t('tourHP'),
-        placement: 'bottom'
-      },
-      {
-        state: 'tasks',
-        element: ".task-column.habits",
-        content: window.env.t('tourHabits'),
-        placement: "right"
-      }
+      ], [ // 2
+        {
+          state: 'tasks',
+          element: '.meter.health',
+          content: window.env.t('tourHP'),
+          placement: 'bottom'
+        }, {
+          state: 'tasks',
+          element: ".task-column.habits",
+          content: window.env.t('tourHabits'),
+          placement: "right"
+        }
 
-    ], [ // 3
-      {
-        state: 'tasks',
-        element: ".hero-stats",
-        content: window.env.t('tourStats')
-      }, {
-        state: 'tasks',
-        element: ".task-column.rewards",
-        content: window.env.t('tourGP'),
-        placement: 'left'
-      }, {
-        state: 'tasks',
-        element: "nav.toolbar",
-        content: window.env.t('tourMuchMore'),
-        placement: "bottom"
-      }
-
-    // Class Tour
-    ], [ // 4
-      {
-        state: 'options.inventory.equipment',
-        element: '.equipment-tab',
-        title: window.env.t('classGear'),
-        content: window.env.t('classGearText', {klass: User.user.stats.class})
-      },
-      {
-        state: 'options.profile.stats',
-        element: ".allocate-stats",
-        title: window.env.t('stats'),
-        content: window.env.t('classStats')
-      }, {
-        state: 'options.profile.stats',
-        element: ".auto-allocate",
-        title: window.env.t('autoAllocate'),
-        placement: 'left',
-        content: window.env.t('autoAllocateText')
-      }, {
-        element: ".meter.mana",
-        title: window.env.t('spells'),
-        content: window.env.t('spellsText') + " <a target='_blank' href='http://habitrpg.wikia.com/wiki/Todos'>" + window.env.t('toDo') + "</a>."
-      }, {
-        orphan: true,
-        title: window.env.t('readMore'),
-        content: window.env.t('moreClass') + " <a href='http://habitrpg.wikia.com/wiki/Class_System' target='_blank'>Wikia</a>."
-      }
+      ], [ // 3
+        {
+          state: 'tasks',
+          element: ".hero-stats",
+          content: window.env.t('tourStats')
+        }, {
+          state: 'tasks',
+          element: ".task-column.rewards",
+          content: window.env.t('tourGP'),
+          placement: 'left'
+        }, {
+          state: 'tasks',
+          element: "nav.toolbar",
+          content: window.env.t('tourMuchMore'),
+          placement: "bottom"
+        }
+      ]
+    ],
+    classes: [
+      [[ // 4
+        {
+          state: 'options.inventory.equipment',
+          element: '.equipment-tab',
+          title: window.env.t('classGear'),
+          content: window.env.t('classGearText', {klass: User.user.stats.class})
+        }, {
+          state: 'options.profile.stats',
+          element: ".allocate-stats",
+          title: window.env.t('stats'),
+          content: window.env.t('classStats')
+        }, {
+          state: 'options.profile.stats',
+          element: ".auto-allocate",
+          title: window.env.t('autoAllocate'),
+          placement: 'left',
+          content: window.env.t('autoAllocateText')
+        }, {
+          element: ".meter.mana",
+          title: window.env.t('spells'),
+          content: window.env.t('spellsText') + " <a target='_blank' href='http://habitrpg.wikia.com/wiki/Todos'>" + window.env.t('toDo') + "</a>."
+        }, {
+          orphan: true,
+          title: window.env.t('readMore'),
+          content: window.env.t('moreClass') + " <a href='http://habitrpg.wikia.com/wiki/Class_System' target='_blank'>Wikia</a>."
+        }
+      ]]
     ]
-  ];
-  _(sets).flatten().each(function(step) {
-    step.content = "<div><div class='" + (env.worldDmg.guide ? "npc_justin_broken" : "npc_justin") + " float-left'></div>" + step.content + "</div>";
-    $(step.element).popover('destroy'); // destroy existing hover popovers so we can add our own
-    step.onShow = function(){
-      // step.path doesn't work in Angular do to async ui-router. Our custom solution:
-      if (step.state && !$state.is(step.state)) {
-        // $state.go() returns a promise, necessary for async tour steps; however, that's not working here - have to use timeout instead :/
-        $state.go(step.state);
-        return $timeout(function(){});
+  }
+  _.each(chapters, function(chapter){
+    _(chapter).flatten().each(function(step) {
+      step.content = "<div><div class='" + (env.worldDmg.guide ? "npc_justin_broken" : "npc_justin") + " float-left'></div>" + step.content + "</div>";
+      $(step.element).popover('destroy'); // destroy existing hover popovers so we can add our own
+      step.onShow = function(){
+        // step.path doesn't work in Angular do to async ui-router. Our custom solution:
+        if (step.state && !$state.is(step.state)) {
+          // $state.go() returns a promise, necessary for async tour steps; however, that's not working here - have to use timeout instead :/
+          $state.go(step.state);
+          return $timeout(function(){});
+        }
       }
-    }
+    })
   })
 
   var tour = new Tour({
@@ -112,12 +115,12 @@ function($rootScope, User, $timeout, $state) {
     //}
   });
 
-  var gotoSet = function(i, force){
-    if (User.user.flags.tourSet > i && !force) return;
-    User.set({'flags.tourSet':i+1});
-    $('.main-herobox').popover('destroy');
+  var goto = function(chapter, page, force){
+    if (User.user.flags.tour[chapter] > page && !force) return;
+    var updates = {};updates['flags.tour.'+chapter] = page+1;
+    User.set(updates);
     var end = tour._options.steps.length;
-    tour.addSteps(sets[i]);
+    tour.addSteps(chapters[chapter][page]);
     tour.restart(); // Tour doesn't quite mesh with our handling of flags.showTour, just restart it on page load
     tour.goTo(end);
   }
@@ -126,7 +129,10 @@ function($rootScope, User, $timeout, $state) {
    * this because we need to determine whether to show the tour *after* the user has been pulled from the server,
    * otherwise it's always start off as true, and then get set to false later
    */
-  $rootScope.$on('userSynced', _.once(_.partial(gotoSet,User.user.flags.tourSet || 0)));
+  $rootScope.$on('userSynced', _.once(function(){
+    if (!User.user.flags.tour) User.user.flags.tour = {};
+    goto('intro', User.user.flags.tour.intro || 0);
+  }));
 
   var alreadyShown = function(before, after) {
     return !(!before && after === true);
@@ -179,7 +185,7 @@ function($rootScope, User, $timeout, $state) {
 
 
   return {
-    gotoSet: gotoSet
+    goto: goto
   };
 
 }]);

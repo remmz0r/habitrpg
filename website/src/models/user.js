@@ -118,7 +118,10 @@ var UserSchema = new Schema({
   flags: {
     customizationsNotification: {type: Boolean, 'default': false},
     showTour: {type: Boolean, 'default': true},
-    tourSet: {type:Number, 'default':0},
+    tour: {
+      intro: {type: Number, 'default': 0},
+      classes: {type: Number, 'default': 0}
+    },
     dropsEnabled: {type: Boolean, 'default': false},
     itemsEnabled: {type: Boolean, 'default': false},
     newStuff: {type: Boolean, 'default': false},
