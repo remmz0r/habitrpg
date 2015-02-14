@@ -56,11 +56,12 @@ function($rootScope, User, $timeout, $state) {
           placement: 'left'
         }, {
           state: 'tasks',
-          element: "nav.toolbar",
+          element: "ul.toolbar-nav",
+          backdrop:false,
           content: window.env.t('tourMuchMore'),
           placement: "bottom",
           onHidden: function(){
-            $rootScope.$watch('user.flags.customizationsNotification', _.partial(goto, 'intro', 4));
+            //$rootScope.$watch('user.flags.customizationsNotification', _.partial(goto, 'intro', 4));
           }
         }
       ], [ // 4
@@ -69,20 +70,10 @@ function($rootScope, User, $timeout, $state) {
           content: window.env.t('customAvatarText'),
           placement: 'bottom',
           onHidden: function(){
-            $rootScope.$watch('user.flags.itemsEnabled', _.partial(goto, 'intro', 5));
+            $rootScope.$watch('user.flags.partyEnabled', _.partial(goto, 'intro', 5));
           }
         }
       ], [ // 5
-        {
-          state: 'tasks',
-          element: 'div.rewards',
-          content: window.env.t('storeUnlockedText'),
-          placement: 'left',
-          onHidden: function(){
-            $rootScope.$watch('user.flags.partyEnabled', _.partial(goto, 'intro', 6));
-          }
-        }
-      ], [ // 6
         {
           element: '.user-menu',
           content: window.env.t('partySysText'),

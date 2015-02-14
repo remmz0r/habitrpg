@@ -56,7 +56,7 @@ gear =
         text: t('weaponBase0Text'), notes: t('weaponBase0Notes'), value:0
     warrior:
       0: text: t('weaponWarrior0Text'), notes: t('weaponWarrior0Notes'), value:0
-      1: text: t('weaponWarrior1Text'), notes: t('weaponWarrior1Notes', {str: 3}), str: 3, value:20
+      1: text: t('weaponWarrior1Text'), notes: t('weaponWarrior1Notes', {str: 3}), str: 3, value:2
       2: text: t('weaponWarrior2Text'), notes: t('weaponWarrior2Notes', {str: 6}), str: 6, value:30
       3: text: t('weaponWarrior3Text'), notes: t('weaponWarrior3Notes', {str: 9}), str: 9, value:45
       4: text: t('weaponWarrior4Text'), notes: t('weaponWarrior4Notes', {str: 12}), str: 12, value:65
