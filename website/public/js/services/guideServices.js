@@ -58,7 +58,35 @@ function($rootScope, User, $timeout, $state) {
           state: 'tasks',
           element: "nav.toolbar",
           content: window.env.t('tourMuchMore'),
-          placement: "bottom"
+          placement: "bottom",
+          onHidden: function(){
+            $rootScope.$watch('user.flags.customizationsNotification', _.partial(goto, 'intro', 4));
+          }
+        }
+      ], [ // 4
+        {
+          element: '.main-herobox',
+          content: window.env.t('customAvatarText'),
+          placement: 'bottom',
+          onHidden: function(){
+            $rootScope.$watch('user.flags.itemsEnabled', _.partial(goto, 'intro', 5));
+          }
+        }
+      ], [ // 5
+        {
+          state: 'tasks',
+          element: 'div.rewards',
+          content: window.env.t('storeUnlockedText'),
+          placement: 'left',
+          onHidden: function(){
+            $rootScope.$watch('user.flags.partyEnabled', _.partial(goto, 'intro', 6));
+          }
+        }
+      ], [ // 6
+        {
+          element: '.user-menu',
+          content: window.env.t('partySysText'),
+          placement: 'bottom'
         }
       ]
     ],
@@ -132,57 +160,21 @@ function($rootScope, User, $timeout, $state) {
   $rootScope.$on('userSynced', _.once(function(){
     if (!User.user.flags.tour) User.user.flags.tour = {};
     goto('intro', User.user.flags.tour.intro || 0);
-  }));
 
-  var alreadyShown = function(before, after) {
-    return !(!before && after === true);
-  };
-
-  var showPopover = function(selector, title, html, placement) {
-    if (!placement) placement = 'bottom';
-    $(selector).popover('destroy');
-    var button = "<button class='btn btn-sm btn-default' onClick=\"$('" + selector + "').popover('hide');return false;\">" + window.env.t('close') + "</button>";
-    html = "<div><div class='" + (env.worldDmg.guide ? "npc_justin_broken" : "npc_justin") + " float-left'></div>" + html + '<br/>' + button + "</div>";
-    $(selector).popover({
-      title: title,
-      placement: placement,
-      trigger: 'manual',
-      html: true,
-      content: html
-    }).popover('show');
-  };
-
-  $rootScope.$watch('user.flags.customizationsNotification', function(after, before) {
-    if (alreadyShown(before, after)) return;
-    showPopover('.main-herobox', window.env.t('customAvatar'), window.env.t('customAvatarText'), 'bottom');
-  });
-
-  $rootScope.$watch('user.flags.itemsEnabled', function(after, before) {
-    if (alreadyShown(before, after)) return;
-    var html = window.env.t('storeUnlockedText');
-    showPopover('div.rewards', window.env.t('storeUnlocked'), html, 'left');
-  });
-
-  $rootScope.$watch('user.flags.partyEnabled', function(after, before) {
-    if (alreadyShown(before, after)) return;
-    var html = window.env.t('partySysText');
-    showPopover('.user-menu', window.env.t('partySys'), html, 'bottom');
-  });
-
-  $rootScope.$watch('user.flags.dropsEnabled', function(after, before) {
-    if (alreadyShown(before, after)) return;
-    var eggs = User.user.items.eggs || {};
-    if (!eggs) {
-      eggs['Wolf'] = 1; // This is also set on the server
-    }
-    $rootScope.openModal('dropsEnabled');
-  });
-
-  $rootScope.$watch('user.flags.rebirthEnabled', function(after, before) {
-      if (alreadyShown(before, after)) return;
+    var alreadyShown = function(before, after) { return !(!before && after === true) };
+    $rootScope.$watch('user.flags.dropsEnabled', _.flow(alreadyShown, function(already) {
+      if (already) return;
+      var eggs = User.user.items.eggs || {};
+      if (!eggs) {
+        eggs['Wolf'] = 1; // This is also set on the server
+      }
+      $rootScope.openModal('dropsEnabled');
+    }));
+    $rootScope.$watch('user.flags.rebirthEnabled', _.flow(alreadyShown, function(already) {
+      if (already) return;
       $rootScope.openModal('rebirthEnabled');
-  });
-
+    }));
+  }));
 
   return {
     goto: goto
